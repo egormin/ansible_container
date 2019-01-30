@@ -1,0 +1,17 @@
+
+version: "2"
+settings:
+  conductor:
+    base: ubuntu:16.04
+  project_name: hello-world_test
+services:
+  build_agent:
+    from: ubuntu:16.04
+    roles:
+      - agent
+    volumes:
+        - /home/jenkins:/home/jenkins/shara/
+    environment:
+      ANSIBLE_FORCE_COLOR: "true"
+    command: [ls --color=auto /]
+registries: {}

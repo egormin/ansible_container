@@ -1,0 +1,49 @@
+- name: Update cache
+  apt:
+    update_cache: yes
+
+- name: dpkg command
+  command: "apt-get -f install -y"
+
+- name: Install packages
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - openjdk-8-jdk
+    - git
+    - sudo
+
+- name: Creates sshd directory
+  file:
+    path: /var/run/sshd
+    state: directory
+
+- name: Check Java version
+  shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
+  register: java_version
+
+- name: Show Java version
+  debug:
+    msg: "Java version is: {{ java_version.stdout }}"
+
+- name: Add the user Jenkins
+  user:
+    name: jenkins
+    shell: /bin/bash
+    groups: root
+    uid: 1002
+
+- name: command
+  shell: "echo 'jenkins ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
+
+- name: install unzip
+  apt:
+    name: unzip
+    state: latest
+
+- name: Unarchive terraform
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/0.11.6/terraform_0.11.6_linux_amd64.zip
+    dest: /usr/local/bin
+    remote_src: yes

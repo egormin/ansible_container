@@ -2,8 +2,8 @@
   apt:
     update_cache: yes
 
-- name: dpkg command
-  command: "apt-get -f install -y"
+# - name: dpkg command
+#   command: "apt-get -f install -y"
 
 - name: Install packages
   apt:
@@ -37,13 +37,13 @@
 - name: command
   shell: "echo 'jenkins ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers"
 
-- name: install unzip
-  apt:
-    name: unzip
-    state: latest
+# - name: install unzip
+#   apt:
+#     name: unzip
+#     state: latest
 
-- name: Unarchive terraform
-  unarchive:
-    src: https://releases.hashicorp.com/terraform/0.11.6/terraform_0.11.6_linux_amd64.zip
-    dest: /usr/local/bin
-    remote_src: yes
+# - name: Unarchive terraform
+#   unarchive:
+#     src: https://releases.hashicorp.com/terraform/0.11.6/terraform_0.11.6_linux_amd64.zip
+#     dest: /usr/local/bin
+#     remote_src: yes

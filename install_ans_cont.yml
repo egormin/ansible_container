@@ -1,0 +1,71 @@
+# - name: Install virtualenv
+#   pip:
+#     name: pip==9.0.3
+#     extra_args: --force-reinstall
+
+- name: Install virtualenv
+  pip:
+    name: virtualenv
+
+- name: Update pip to specific version
+  pip:
+    name: pip
+    version: 9.0.3 #https://github.com/ansible/ansible-container/issues/919#issuecomment-394018163
+    virtualenv: "{{ venv_folder_for_ansible_container }}"
+
+- name: Update pip docker package
+  pip:
+    name: docker==2.7.0 #https://github.com/ansible/ansible-container/issues/884#issuecomment-365285935
+    virtualenv: "{{ venv_folder_for_ansible_container }}"
+
+# - name: Install Ansible Container
+#   pip:
+#     name: git+https://github.com/ansible/ansible-container.git@develop
+#     virtualenv: "{{ venv_folder_for_ansible_container }}"
+
+
+- name: Install Ansible Container with pip
+  pip:
+    name: ansible-container
+    virtualenv: "{{ venv_folder_for_ansible_container }}"
+
+- name: Remove old folder "{{ ansible_container_folder }}" if exists
+  file:
+    name: "{{ ansible_container_folder }}"
+    state: absent
+
+- name: Create folder "{{ ansible_container_folder }}"
+  file:
+    name: "{{ ansible_container_folder }}"
+    state: directory
+
+
+# - name: example copying file with owner and permissions
+#   copy:
+#     src: setup.py
+#     dest: /opt/VENVS/venv_ansible-container/local/lib/python2.7/site-packages/container/docker/files/setup.py
+
+# - name: example copying file with owner and permiуs
+#   copy:
+#     src: setup.py
+#     dest: /opt/VENVS/venv_ansible-container/local/lib/python2.7/site-packages/container/docker/files/conductor-requirements.txt
+
+# - name: example copying file with owner and permissionsуу
+#   copy:
+#     src: setup.py
+#     dest: /opt/VENVS/venv_ansible-container/local/lib/python2.7/site-packages/container/docker/files/conductor-requirements.yml
+
+- name: "Init new ansible-container project"
+  shell: | 
+      . {{ venv_folder_for_ansible_container }}/bin/activate
+      ansible-container version
+      ansible-container --project-path={{ ansible_container_folder }} init
+      #ansible-container --project-path={{ ansible_container_folder }} build
+
+- name: Correct permissions for folder "{{ ansible_container_folder }}"
+  file:
+    name: "{{ ansible_container_folder }}"
+    state: directory
+    owner: jenkins
+    group: jenkins
+    recurse: yes
